@@ -1,0 +1,41 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Ursa.Demo.ViewModels"
+             xmlns:pages="clr-namespace:Ursa.Demo.Pages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:DataType="viewModels:CircularBuffDemoViewModel"
+             x:Class="Ursa.Demo.Pages.CircularBuffDemo">
+    <Design.DataContext>
+        <viewModels:CircularBuffDemoViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*,50">
+        <Grid ColumnDefinitions="*,*,*">
+            <Border BorderThickness="2" BorderBrush="Chocolate" CornerRadius="5" Margin="5">
+                <Grid RowDefinitions="Auto,*" >
+                    <TextBlock Grid.Row="0" Text="AvaloniaList" />
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding BuffAvaloniaList}" Background="Gainsboro"/>
+                </Grid>
+            </Border>
+            <Border Grid.Column="1" BorderThickness="2" BorderBrush="Chocolate" CornerRadius="5" Margin="5">
+                <Grid RowDefinitions="Auto,*" >
+                    <TextBlock Grid.Row="0" Text="ObservableCircularBuff" />
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding BuffCircular}" Background="Gainsboro"/>
+                </Grid>
+            </Border>
+            <Border Grid.Column="2" BorderThickness="2" BorderBrush="Chocolate" CornerRadius="5" Margin="5">
+                <Grid RowDefinitions="Auto,*" >
+                    <TextBlock Grid.Row="0" Text="ObservableCollection" />
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding BuffCollect}" Background="Gainsboro"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <UniformGrid Grid.Row="1" Height="50" Columns="3">
+            <TextBox Text="{Binding InText,Mode=TwoWay,UpdateSourceTrigger=LostFocus}" />
+            <Button Content="Add" Command="{Binding AppendBuff}"/>
+            <Button Content="Clear" Command="{Binding ClearBuff}" />
+        </UniformGrid>
+    </Grid>
+</UserControl>

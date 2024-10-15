@@ -72,6 +72,7 @@ public class MainViewViewModel : ViewModelBase
             MenuKeys.MenuKeyToolBar => new ToolBarDemoViewModel(),
             MenuKeys.MenuKeyTreeComboBox => new TreeComboBoxDemoViewModel(),
             MenuKeys.MenuKeyTwoTonePathIcon => new TwoTonePathIconDemoViewModel(),
+            MenuKeys.MenuKeyCircularBuff => new CircularBuffDemoViewModel(),
             _ => throw new ArgumentOutOfRangeException(nameof(s), s, null)
         };
     }

@@ -6,8 +6,8 @@ namespace Toll.Core.Shared.Collections;
 
 public class ObservableCircularBuff<T> : IDwBuff<T>
 {
-    private readonly CircularBuffer<T> inner;
-    private NotifyCollectionChangedEventHandler? collectionChanged;
+    private readonly CircularBuffer<T> _inner;
+    private NotifyCollectionChangedEventHandler? _collectionChanged;
     
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableCircularBuff{T}"/>.
@@ -15,7 +15,7 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// <param name="capacity">Initial list capacity.</param>
     public ObservableCircularBuff(int capacity = 0)
     {
-        inner = new(capacity);
+        _inner = new(capacity);
     }
     
     /// <summary>
@@ -24,12 +24,12 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// <param name="items">The initial items for the collection.</param>
     public ObservableCircularBuff(IEnumerable<T> items)
     {
-        inner = new(items);
+        _inner = new(items);
     }
     
     public ObservableCircularBuff(params T[] items)
     {
-        inner = new(items);
+        _inner = new(items);
     }
     
     /// <summary>
@@ -37,8 +37,8 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// </summary>
     public event NotifyCollectionChangedEventHandler? CollectionChanged
     {
-        add => collectionChanged += value;
-        remove => collectionChanged -= value;
+        add => _collectionChanged += value;
+        remove => _collectionChanged -= value;
     }
     
     /// <summary>
@@ -49,7 +49,7 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// <summary>
     /// Gets the number of items in the collection.
     /// </summary>
-    public int Count => inner.Count;
+    public int Count => _inner.Count;
     
 
     /// <summary>
@@ -57,11 +57,11 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// </summary>
     public int Capacity
     {
-        get => inner.Capacity;
-        set => inner.Capacity = value;
+        get => _inner.Capacity;
+        set => _inner.Capacity = value;
     }
     
-    public bool IsReadOnly => inner.IsReadOnly;
+    public bool IsReadOnly => _inner.IsReadOnly;
     
     /// <summary>
     /// Append an item to the collection.
@@ -69,13 +69,13 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// <param name="item">The item.</param>
     public T? Append(T item)
     {
-        int appendIndex;
-        var availableRemove = inner.Append(item);
+        int appendIndex = _inner.NextIndex;
+        var availableRemove = _inner.Append(item);
         if (availableRemove != null)
         {
             NotifyRemove(availableRemove, 0);
         }
-        NotifyAdd(item, inner.Count);
+        NotifyAdd(item, appendIndex);
         return availableRemove;
     }
 
@@ -86,10 +86,10 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     {
         if (Count > 0)
         {
-            inner.Clear();
-            if (collectionChanged != null)
+            _inner.Clear();
+            if (_collectionChanged != null)
             {
-                collectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                _collectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
 
             NotifyCountChanged();
@@ -101,7 +101,7 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// </summary>
     /// <param name="item">The item.</param>
     /// <returns>True if the collection contains the item; otherwise false.</returns>
-    public bool Contains(T item) => inner.Contains(item);
+    public bool Contains(T item) => _inner.Contains(item);
 
     /// <summary>
     /// Copies the collection's contents to an array.
@@ -110,21 +110,21 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// <param name="arrayIndex">The first index of the array to copy to.</param>
     public void CopyTo(T[] array, int arrayIndex)
     {
-        inner.CopyTo(array, arrayIndex);
+        _inner.CopyTo(array, arrayIndex);
     }
     
-    public T this[int index] => inner[index];
+    public T this[int index] => _inner[index];
     
     /// <summary>
     /// Returns an enumerator that enumerates the items in the collection.
     /// </summary>
     /// <returns>An <see cref="IEnumerator{T}"/>.</returns>
-    IEnumerator<T> IEnumerable<T>.GetEnumerator() => inner.GetEnumerator();
+    IEnumerator<T> IEnumerable<T>.GetEnumerator() => _inner.GetEnumerator();
 
     /// <inheritdoc/>
-    IEnumerator IEnumerable.GetEnumerator() => inner.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => _inner.GetEnumerator();
     
-    public CircularBuffer<T>.Enumerator GetEnumerator() => inner.GetEnumerator();
+    public CircularBuffer<T>.Enumerator GetEnumerator() => _inner.GetEnumerator();
 
     /// <summary>
     /// Raises the <see cref="CollectionChanged"/> event with an add action.
@@ -133,10 +133,10 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// <param name="index">The starting index.</param>
     private void NotifyAdd(IList t, int index)
     {
-        if (collectionChanged != null)
+        if (_collectionChanged != null)
         {
             var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, t, index);
-            collectionChanged(this, e);
+            _collectionChanged(this, e);
         }
 
         NotifyCountChanged();
@@ -149,9 +149,10 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// <param name="index">The starting index.</param>
     private void NotifyAdd(T item, int index)
     {
-        if (collectionChanged != null)
+        if (_collectionChanged != null)
         {
-            collectionChanged(this, EventArgsCache.ResetCollectionChanged);
+            var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new[] { item }, index);
+            _collectionChanged(this, e);
         }
 
         NotifyCountChanged();
@@ -173,10 +174,10 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// <param name="index">The starting index.</param>
     private void NotifyRemove(IList t, int index)
     {
-        if (collectionChanged != null)
+        if (_collectionChanged != null)
         {
             var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, t, index);
-            collectionChanged(this, e);
+            _collectionChanged(this, e);
         }
 
         NotifyCountChanged();
@@ -189,10 +190,10 @@ public class ObservableCircularBuff<T> : IDwBuff<T>
     /// <param name="index">The starting index.</param>
     private void NotifyRemove(T item, int index)
     {
-        if (collectionChanged != null)
+        if (_collectionChanged != null)
         {
             var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new[] { item }, index);
-            collectionChanged(this, e);
+            _collectionChanged(this, e);
         }
 
         NotifyCountChanged();

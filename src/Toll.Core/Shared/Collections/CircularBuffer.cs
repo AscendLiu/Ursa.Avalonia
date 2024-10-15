@@ -44,6 +44,11 @@ public class CircularBuffer<T> : ICollection, IReadOnlyCollection<T>,IBuff<T>
         arrayBuff = EnumerableHelpers.ToArray(collection, out size);
         if (size != arrayBuff.Length) nextIndex = size;
     }
+    
+    /// <summary>
+    /// 下一个待插入的位置
+    /// </summary>
+    public int NextIndex => nextIndex;
 
     /// <summary>
     /// 已经容纳的元素个数
