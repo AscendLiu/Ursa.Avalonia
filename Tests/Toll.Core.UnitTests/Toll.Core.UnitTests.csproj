@@ -24,5 +24,6 @@
       <ProjectReference Include="..\..\src\Toll.Core\Toll.Core.csproj" />
       <ProjectReference Include="..\Common.UnitTests\Common.UnitTests.csproj" />
     </ItemGroup>
+    
 
 </Project>

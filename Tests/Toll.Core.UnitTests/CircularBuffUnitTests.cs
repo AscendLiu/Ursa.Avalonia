@@ -6,11 +6,41 @@ namespace Toll.Core.UnitTests;
 
 public class CircularBuffUnitTests(ITestOutputHelper tempOutput) : OutputConsoleHelper(tempOutput)
 {
+    private int[] data1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+    
     [Fact]
     public void CircularBuff_Constructor()
     {
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() => { _ = new CircularBuffer<int>(-10);});
+        var buff = new CircularBuffer<int>();
+        Assert.Equal(CircularBuffer<int>.DefaultInitCapacity, buff.Capacity);
+        
+        buff = new CircularBuffer<int>(0);
+        Assert.Equal(0, buff.Capacity);
+        
+        buff = new CircularBuffer<int>(20);
+        Assert.Equal(20, buff.Capacity);
+        // Assert.ThrowsAny<ArgumentOutOfRangeException>(() => { _ = new CircularBuffer<int>(10);}); 捕捉任何一个
         // Assert.Equal("EndBit", exception.ParamName);
+    }
+
+    [Fact]
+    public void CircularBuffer_TestGrow()
+    {
+        var buff = new CircularBuffer<int>();
+
+        int 需要循环的次数 = 10;
+        buff.MaxCapacity = 5;
+        int lastCapacity = buff.Capacity;
+        for (int index = 0; index < 需要循环的次数; index++)
+        {
+            // Output.WriteLine($"be capacity:{lastCapacity}");
+            buff.Add(index);
+            Assert.True(buff.Capacity >= lastCapacity);
+            Assert.True(buff.Capacity <= buff.MaxCapacity);
+            lastCapacity = buff.Capacity;
+            // Output.WriteLine($"en capacity:{lastCapacity}");
+        }
     }
     
     [Theory]
@@ -25,7 +55,7 @@ public class CircularBuffUnitTests(ITestOutputHelper tempOutput) : OutputConsole
         Assert.True(0 == buff.Count);
         for (int i = 1; i <= insertCount; i++)
         {
-            buff.Append(i);
+            buff.Add(i);
         }
 
         foreach (var item in buff)//测试迭代器
@@ -52,7 +82,7 @@ public class CircularBuffUnitTests(ITestOutputHelper tempOutput) : OutputConsole
         string[] items = { "one", "two", "three", "four", "five", "six" };
         foreach (var item in items)
         {
-            buff.Append(item);
+            buff.Add(item);
         }
         Assert.True(buff.Contains("three"));
         Assert.False(buff.Contains("f3s"));
@@ -63,13 +93,13 @@ public class CircularBuffUnitTests(ITestOutputHelper tempOutput) : OutputConsole
     {
         var buff = new CircularBuffer<string>(3);
         Assert.False(buff.IsFull);
-        buff.Append("one");
+        buff.Add("one");
         Assert.False(buff.IsFull);
-        buff.Append("one");
+        buff.Add("one");
         Assert.False(buff.IsFull);
-        buff.Append("one");
+        buff.Add("one");
         Assert.True(buff.IsFull);
-        buff.Append("one");
+        buff.Add("one");
         Assert.True(buff.IsFull);
         buff.Clear();
         Assert.False(buff.IsFull);
@@ -83,7 +113,7 @@ public class CircularBuffUnitTests(ITestOutputHelper tempOutput) : OutputConsole
         int[] ints = { 1, 2, 3, 4, 5 };
         foreach (var item in ints)
         {
-            buff.Append(item);
+            buff.Add(item);
         }
         var copy = buff.ToArray();
         Assert.Equal(ints, copy);
@@ -108,13 +138,13 @@ public class CircularBuffUnitTests(ITestOutputHelper tempOutput) : OutputConsole
         int[] ints2 = { 1, 2, 3, 4};
         foreach (var item in ints2)
         {
-            buff.Append(item);
+            buff.Add(item);
         }
         int[]? copyArray = new int[4];
         buff.CopyTo(copyArray, 0); 
         Assert.Equal(ints2, copyArray);
         
-        buff.Append(5);
+        buff.Add(5);
         buff.CopyTo(copyArray, 0); 
         Assert.NotEqual(copyArray, ints2);
         Assert.Equal(copyArray, new int[]{2,3,4,5});

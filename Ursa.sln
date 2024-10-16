@@ -50,6 +50,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.UnitTests", "Tests\C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ursa.UnitTests", "Tests\Ursa.UnitTests\Ursa.UnitTests.csproj", "{7FE74BCD-D81C-4C1D-856F-C40177DC2712}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ursa.Demo.Console", "demo\Ursa.Demo.Console\Ursa.Demo.Console.csproj", "{D9253FCD-D31D-44AF-972B-153AB06985D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -120,6 +122,10 @@ Global
 		{7FE74BCD-D81C-4C1D-856F-C40177DC2712}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FE74BCD-D81C-4C1D-856F-C40177DC2712}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FE74BCD-D81C-4C1D-856F-C40177DC2712}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9253FCD-D31D-44AF-972B-153AB06985D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9253FCD-D31D-44AF-972B-153AB06985D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9253FCD-D31D-44AF-972B-153AB06985D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9253FCD-D31D-44AF-972B-153AB06985D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,5 +143,6 @@ Global
 		{3548F8C7-3205-403D-A0B4-580CD01A5BBC} = {3653B1F0-01AE-46B1-8430-4ED1566F2BBF}
 		{E8255CC7-C94A-441F-87B1-ABF2FE15D7DE} = {3653B1F0-01AE-46B1-8430-4ED1566F2BBF}
 		{7FE74BCD-D81C-4C1D-856F-C40177DC2712} = {3653B1F0-01AE-46B1-8430-4ED1566F2BBF}
+		{D9253FCD-D31D-44AF-972B-153AB06985D8} = {A41BAF0D-DA61-4A63-889A-084BAD36FD66}
 	EndGlobalSection
 EndGlobal
