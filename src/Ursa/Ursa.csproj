@@ -3,7 +3,7 @@
     <Import Project="../Package.props"/>
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;net8</TargetFrameworks>
+        <TargetFrameworks>net8</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
@@ -21,4 +21,9 @@
     <ItemGroup>
         <None Include="irihi.png" Pack="true" PackagePath=""/>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Toll.Core\Toll.Core.csproj" />
+    </ItemGroup>
+    
 </Project>
